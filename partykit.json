@@ -1,0 +1,10 @@
+{
+  "$schema": "https://www.partykit.io/schema.json",
+  "name": "meme-alchemy-party",
+  "main": "party-servers/main.ts",
+  "parties": {
+    "captionwars": "party-servers/captionWars.ts",
+    "memealchemy": "party-servers/memeAlchemy.ts"
+  },
+  "compatibilityDate": "2024-08-22"
+}
