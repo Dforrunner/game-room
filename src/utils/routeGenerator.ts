@@ -1,7 +1,10 @@
 import { SERVER_URL } from '@/env';
 
 export function routeGen(url: string, params?: Record<string, any>): string {
-  url = SERVER_URL + url;
+  if (process.env.NODE_ENV === 'development') {
+    url = SERVER_URL + url;
+  }
+
   if (params) {
     const filteredParams = Object.entries(params)
       .filter(([key, value]) => !!String(value).length)
