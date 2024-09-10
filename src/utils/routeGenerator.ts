@@ -1,9 +1,6 @@
-import { SERVER_URL } from '@/env';
 
 export function routeGen(url: string, params?: Record<string, any>): string {
-  if (process.env.NODE_ENV === 'development') {
-    url = SERVER_URL + url;
-  }
+  url = process.env.NEXT_PUBLIC_SERVER_URL + url;
 
   if (params) {
     const filteredParams = Object.entries(params)
