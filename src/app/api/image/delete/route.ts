@@ -27,7 +27,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'File not found' }, { status: 400 });
     }
 
-    console.log({ deleteFilePath });
     // Delete the file
     await fs.remove(deleteFilePath);
 

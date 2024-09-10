@@ -8,22 +8,22 @@ interface FileUploadProps {
   file: File;
   playerId: string;
   roomId: string;
-  party: PartyType;
-  isAvater?: boolean;
+  partyType: PartyType;
+  isAvatar?: boolean;
 }
 export async function imageUpload({
   file,
   playerId,
   roomId,
-  party,
-  isAvater = false,
+  partyType,
+  isAvatar = false,
 }: FileUploadProps): Promise<FileUploadResponse> {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('playerId', playerId);
   formData.append('roomId', roomId);
-  formData.append('party', party);
-  formData.append('isAvater', isAvater ? 'true' : 'false');
+  formData.append('partyType', partyType);
+  formData.append('isAvatar', isAvatar ? 'true' : 'false');
 
   const res = await fetch(apiRoute.image.upload(), {
     method: 'POST',

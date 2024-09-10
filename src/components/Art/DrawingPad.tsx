@@ -154,7 +154,7 @@ export default function DrawingPad({ onSubmit }: Props) {
 
   const handleSubmit = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !paths.length) return;
     canvas.toBlob((blob) => {
       if (!blob) return;
       const file = new File([blob], 'canvas-image.png', { type: 'image/png' });

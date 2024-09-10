@@ -1,55 +1,49 @@
-import { writeFile, mkdir, access } from 'fs/promises';
+import { uploadPlayerImage } from '@/lib/image';
+import { PartyType } from '@/types/gameServers';
+import { withErrorHandler } from '@/utils/apiErrorHandler';
+import { parsedAndValidateData } from '@/utils/zodParser';
 import { NextRequest, NextResponse } from 'next/server';
-import { join } from 'path';
-import sharp from 'sharp';
+import { z } from 'zod';
 
-export async function POST(req: NextRequest) {
-  try {
-    const formData = await req.formData();
-    const file = formData.get('file') as File | null;
-    const playerId = formData.get('playerId') as string | null;
-    const roomId = formData.get('roomId') as string | null;
-    const party = formData.get('party') as string | null;
-    const isAvator = formData.get('isAvator') as string | null;
+export async function uploadImageHandler(req: NextRequest) {
+  const formData = await req.formData();
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
-    }
+  const schema = z.object({
+    file: z.instanceof(File),
+    playerId: z.string(),
+    roomId: z.string(),
+    partyType: z.enum(Object.values(PartyType) as [PartyType, ...PartyType[]]),
+    isAvatar: z.string().transform((val) => val.toLocaleLowerCase() === 'true'),
+  });
 
-    if (!playerId || !roomId || !party) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+  const rawData = {
+    file: formData.get('file'),
+    playerId: formData.get('playerId'),
+    roomId: formData.get('roomId'),
+    partyType: formData.get('partyType'),
+    isAvatar: formData.get('isAvatar'),
+  };
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const fileName = `${playerId}.webp`;
-    const optimizedImage = await sharp(buffer)
-      .resize(400, 400, { fit: 'inside', withoutEnlargement: true })
-      .webp()
-      .toBuffer();
+  const { file, playerId, isAvatar, partyType, roomId } = parsedAndValidateData<
+    typeof schema
+  >(rawData, schema);
 
-    const relativeDir = join('uploads', party, roomId);
-    const uploadDir = join(process.cwd(), 'public', relativeDir);
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
 
-    const pulicImgUrl = join('/', relativeDir, fileName);
+  const imageUrl = await uploadPlayerImage({
+    buffer,
+    playerId,
+    partyType,
+    roomId,
+    imageType: 'avatar',
+    imageSize: 100,
+  });
 
-    // Check if the upload directory exists
-    try {
-      await access(uploadDir);
-    } catch (error) {
-      // If the directory doesn't exist, create it
-      await mkdir(uploadDir, { recursive: true });
-    }
-    await writeFile(join(uploadDir, fileName), optimizedImage);
-
-    return NextResponse.json({
-      message: 'File uploaded successfully',
-      imageUrl: pulicImgUrl,
-    });
-  } catch (error) {
-    return NextResponse.json({ error: 'File upload failed' }, { status: 500 });
-  }
+  return NextResponse.json({
+    message: 'File uploaded successfully',
+    imageUrl,
+  });
 }
+
+export const POST = withErrorHandler(uploadImageHandler);

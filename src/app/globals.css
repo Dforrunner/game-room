@@ -3,13 +3,11 @@
 @tailwind utilities;
 
 body {
-  min-height: 100vh;
-  min-width: 100dvw;
+  height: 100dvh;
+  margin: 0;
+  /* overflow: hidden; */
 }
 
-* {
-  box-sizing: border-box;
-}
 @layer utilities {
   .text-balance {
     text-wrap: balance;

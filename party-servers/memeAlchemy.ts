@@ -2,12 +2,16 @@ import { MEME_CAPTIONS } from '@/lib/memeCaptions';
 import { apiRoute, route } from '@/routes';
 import {
   ActionType,
+  Caption,
   MemeAlchemyGameState,
   MemeAlchemyPlayer,
+  Phase,
 } from '@/types/memeAlchemy';
+import { getRandomLightColorHex } from '@/utils/color';
 import * as Party from 'partykit/server';
 
 const MIN_PLAYERS = 1;
+const VOTE_BASE_SCORE = 10;
 
 export default class MemeAlchemyServer implements Party.Server {
   gameState: MemeAlchemyGameState;
@@ -15,13 +19,14 @@ export default class MemeAlchemyServer implements Party.Server {
   constructor(readonly party: Party.Room) {
     this.gameState = {
       players: [],
-      currentCaption: '',
-      usedCaptions: [],
+      currentCaption: {} as any,
+      usedCaptionIds: [],
       playerCaptions: [],
       imageSubmissions: {},
-      round: 0,
+      roundScores: {},
+      round: 1,
       maxRounds: 5,
-      phase: 'lobby',
+      phase: Phase.Lobby,
     };
   }
 
@@ -32,21 +37,28 @@ export default class MemeAlchemyServer implements Party.Server {
 
   onMessage(message: string, sender: Party.Connection) {
     const data = JSON.parse(message);
+    const playerId = sender.id;
     switch (data.type) {
       case ActionType.Join:
-        this.addPlayer(sender.id, data.name);
+        this.addPlayer(playerId, data.name);
         break;
       case ActionType.Start:
-        if (this.isHost(sender.id)) this.startGame();
+        if (this.isHost(playerId)) this.startGame();
         break;
       case ActionType.SubmitImage:
-        this.submitImage(sender.id, data.imageUrl);
+        this.submitImage(playerId, data.imageUrl);
         break;
       case ActionType.SubmitCaption:
-        this.submitCaption(sender.id, data.caption);
+        this.submitCaption(data.caption);
         break;
       case ActionType.SubmitVote:
-        this.submitVote(data.playerId);
+        this.submitVote(playerId, data.playerVotedFor);
+        break;
+      case ActionType.SubmitAvatar:
+        this.submitAvatar(playerId, data.imageUrl);
+        break;
+      case ActionType.StartNextPhase:
+        this.startNextPhase();
         break;
     }
   }
@@ -73,6 +85,8 @@ export default class MemeAlchemyServer implements Party.Server {
       const newPlayer: MemeAlchemyPlayer = {
         id,
         name,
+        avatarUrl: '',
+        color: getRandomLightColorHex(),
         score: 0,
         isHost: this.gameState.players.length === 0,
       };
@@ -125,61 +139,84 @@ export default class MemeAlchemyServer implements Party.Server {
 
   private startRound() {
     const captions = MEME_CAPTIONS.filter(
-      (c) => !this.gameState.usedCaptions.includes(c)
+      (c) => !this.gameState.usedCaptionIds.includes(c.id)
     );
     this.gameState.currentCaption =
       captions[Math.floor(Math.random() * captions.length)];
     this.gameState.imageSubmissions = {};
-    this.gameState.phase = 'submission';
+    this.gameState.phase = Phase.Submission;
     this.broadcastState();
   }
 
   private submitImage(playerId: string, imageUrl: string) {
-    if (this.gameState.phase === 'submission') {
-      this.gameState.imageSubmissions[playerId] = imageUrl;
+    if (this.gameState.phase !== Phase.Submission) return;
+    this.gameState.imageSubmissions[playerId] = imageUrl;
 
-      if (
-        Object.keys(this.gameState.imageSubmissions).length ===
-        this.gameState.players.length
-      ) {
-        this.gameState.phase = 'voting';
-        this.broadcastState();
-      }
+    if (
+      Object.keys(this.gameState.imageSubmissions).length ===
+      this.gameState.players.length
+    ) {
+      this.gameState.phase = Phase.Voting;
+      this.broadcastState();
     }
   }
 
-  private submitVote(playerId: string) {
-    const playerVotedFor = this.gameState.players.find(
-      (p) => p.id === playerId
-    );
-    if (playerVotedFor) {
-      playerVotedFor.score++;
-    }
+  private submitVote(playerId: string, playerVotedFor: string) {
+    if (this.gameState.phase !== Phase.Voting) return;
 
-    this.gameState.round++;
-    if (this.gameState.round > this.gameState.maxRounds) {
-      this.gameState.phase = 'results';
-    } else {
-      this.startRound();
+    if (!this.gameState.roundScores[playerVotedFor]) {
+      this.gameState.roundScores[playerVotedFor] = [];
+    }
+    this.gameState.roundScores[playerVotedFor].push({
+      points: VOTE_BASE_SCORE,
+      votedBy: playerId,
+      type: 'vote',
+    });
+
+    if (
+      Object.keys(this.gameState.roundScores).length ===
+      this.gameState.players.length
+    ) {
+      if (this.gameState.round === this.gameState.maxRounds) {
+        this.gameState.phase = Phase.FinalResults;
+      } else {
+        this.gameState.phase = Phase.Results;
+      }
     }
     this.broadcastState();
   }
 
-  private submitCaption(playerId: string, caption: string) {
-    if (this.gameState.currentCaption === caption) {
-      const player = this.gameState.players.find((p) => p.id === playerId);
-      if (player) {
-        player.score++;
-      }
-      this.gameState.usedCaptions.push(this.gameState.currentCaption);
-      this.gameState.round++;
-      if (this.gameState.round > this.gameState.maxRounds) {
-        this.gameState.phase = 'results';
-      } else {
-        this.startRound();
-      }
-      this.broadcastState();
+  private submitCaption(caption: Caption) {
+    this.gameState.playerCaptions.push(caption);
+    this.broadcastState();
+  }
+
+  private async submitAvatar(playerId: string, imageUrl: string) {
+    this.gameState.players.find((p) => p.id === playerId)!.avatarUrl = imageUrl;
+    this.broadcastState();
+  }
+
+  private startNextPhase() {
+    switch (this.gameState.phase) {
+      case Phase.Lobby:
+        this.startGame();
+        break;
+      case Phase.Submission:
+        this.gameState.phase = Phase.Voting;
+        break;
+      case Phase.Voting:
+        this.gameState.phase = Phase.Results;
+        break;
+      case Phase.Results:
+        this.gameState.round++;
+        if (this.gameState.round > this.gameState.maxRounds) {
+          this.gameState.phase = Phase.FinalResults;
+        } else {
+          this.startRound();
+        }
+        break;
     }
+    this.broadcastState();
   }
 
   private async clearRoomImages() {
@@ -212,12 +249,13 @@ export default class MemeAlchemyServer implements Party.Server {
     this.clearRoomImages();
     this.gameState = {
       ...this.gameState,
-      currentCaption: '',
+      currentCaption: {} as any,
       imageSubmissions: {},
-      usedCaptions: [],
+      usedCaptionIds: [],
       playerCaptions: [],
-      round: 0,
-      phase: 'lobby',
+      roundScores: {},
+      round: 1,
+      phase: Phase.Lobby,
     };
   }
 }

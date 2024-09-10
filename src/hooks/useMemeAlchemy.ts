@@ -1,10 +1,12 @@
 import { PARTYKIT_HOST } from '@/env';
 import { PartyType } from '@/types/gameServers';
 import { ActionType, MemeAlchemyGameState } from '@/types/memeAlchemy';
+import { useParams } from 'next/navigation';
 import usePartySocket from 'partysocket/react';
 import { useMemo, useState } from 'react';
 
-export const useMemeAlchemy = (roomId: string) => {
+export const useMemeAlchemy = () => {
+  const { roomId } = useParams<{ roomId: string }>();
   const [gameState, setGameState] = useState<MemeAlchemyGameState>();
 
   const socket = usePartySocket({
@@ -30,7 +32,7 @@ export const useMemeAlchemy = (roomId: string) => {
   };
 
   const joinGame = (name: string) => {
-    if(!name) return;
+    if (!name) return;
     // setPlayerId(socket.id);
     dispatch(ActionType.Join, { name });
   };
@@ -39,17 +41,28 @@ export const useMemeAlchemy = (roomId: string) => {
     dispatch(ActionType.SubmitImage, { imageUrl });
   };
 
-  const submitVote = (playerId: string) => {
-    dispatch(ActionType.SubmitVote, { playerId });
+  const submitVote = (playerVotedFor: string) => {
+    dispatch(ActionType.SubmitVote, { playerVotedFor });
+  };
+
+  const submitAvatar = (imageUrl: string) => {
+    dispatch(ActionType.SubmitAvatar, { imageUrl });
+  };
+
+  const startNextPhase = () => {
+    dispatch(ActionType.StartNextPhase);
   };
 
   return {
     gameState,
     playerId,
+    roomId,
     player,
     startGame,
     joinGame,
     submitImage,
     submitVote,
+    submitAvatar,
+    startNextPhase,
   };
 };

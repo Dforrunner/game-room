@@ -22,13 +22,13 @@ interface Props {
   onUpload: (imgUrl: string) => void;
   playerId: string;
   roomId: string;
-  party: PartyType;
+  partyType: PartyType;
 }
 export default function ImageUpload({
   onUpload,
   playerId,
   roomId,
-  party,
+  partyType,
 }: Props) {
   const [isUploading, setIsUploading] = useState(false);
   const hasUploadedOnce = useRef(false);
@@ -40,7 +40,12 @@ export default function ImageUpload({
     setError('');
     setIsUploading(true);
     try {
-      const res = await imageUpload({ file, playerId, roomId, party });
+      const res = await imageUpload({
+        file,
+        playerId,
+        roomId,
+        partyType,
+      });
       hasUploadedOnce.current = true;
       onUpload(res.imageUrl);
     } catch (error) {
@@ -55,22 +60,22 @@ export default function ImageUpload({
       <LoadingButton
         loading={isUploading}
         disabled={isUploading || hasUploadedOnce.current}
-        loadingPosition="start"
-        component="label"
+        loadingPosition='start'
+        component='label'
         role={undefined}
-        variant="contained"
+        variant='contained'
         tabIndex={-1}
         startIcon={<CloudUploadIcon />}
       >
         {isUploading ? 'Uploading...' : 'Upload Meme'}
         <VisuallyHiddenInput
-          type="file"
-          accept="image/*"
+          type='file'
+          accept='image/*'
           onChange={handleUpload}
           multiple={false}
         />
       </LoadingButton>
-      {error && <div className="text-xs text-red-700">{error}</div>}
+      {error && <div className='text-xs text-red-700'>{error}</div>}
     </div>
   );
 }

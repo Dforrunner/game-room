@@ -68,8 +68,6 @@ export default function PlayerView() {
 
   const player = gameState.players.find((p) => p.id === playerId);
 
-  console.log({ gameState, playerId, socketId: socket.id });
-  console.log({ player });
   if (!player) {
     return (
       <div className="container mx-auto p-4 h-screen flex flex-col items-center justify-center">

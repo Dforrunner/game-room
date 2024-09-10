@@ -19,14 +19,14 @@ export const route = {
       host: (roomId: string) =>
         routeGen(GameRoute.CaptionWars + `/${roomId}/host`),
       player: (roomId: string) =>
-        routeGen(GameRoute.CaptionWars + `/${roomId}/play`),
+        routeGen(GameRoute.CaptionWars + `/${roomId}/player`),
     },
     memeAlchemy: {
       home: () => routeGen(GameRoute.MemeAlchemy),
       host: (roomId: string) =>
         routeGen(GameRoute.MemeAlchemy + `/${roomId}/host`),
       player: (roomId: string) =>
-        routeGen(GameRoute.MemeAlchemy + `/${roomId}/play`),
+        routeGen(GameRoute.MemeAlchemy + `/${roomId}/player`),
       imageFolder: (roomId: string) =>
         `/uploads/${PartyType.MemeAlchemy}/${roomId}`,
     },
