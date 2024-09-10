@@ -160,7 +160,7 @@ export function handleApiError(error: unknown): NextResponse<ErrorResponse> {
 }
 
 // Function to wrap API routes with error handling
-export function withErrorHandler(handler: Function) {
+export function withErrorHandler(handler: (...args: any) => any) {
   return async (req: NextRequest, res: NextResponse) => {
     try {
       return await handler(req, res);

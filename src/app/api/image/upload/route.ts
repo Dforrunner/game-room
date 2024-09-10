@@ -5,7 +5,7 @@ import { parsedAndValidateData } from '@/utils/zodParser';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-export async function uploadImageHandler(req: NextRequest) {
+async function uploadImageHandler(req: NextRequest) {
   const formData = await req.formData();
 
   const schema = z.object({

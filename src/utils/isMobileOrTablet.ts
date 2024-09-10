@@ -21,7 +21,7 @@ export function useIsMobileOrTablet() {
   const [isMobOrTab, setIsMobOrTab] = useState(false);
   useEffect(() => {
     setIsMobOrTab(isMobileOrTablet());
-  });
+  }, []);
   return isMobOrTab;
 }
 

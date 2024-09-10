@@ -5,7 +5,7 @@ import { withErrorHandler } from '@/utils/apiErrorHandler';
 import { parsedAndValidateData } from '@/utils/zodParser';
 import { PartyType } from '@/types/gameServers';
 
-export async function generateImageHandler(req: NextRequest) {
+async function generateImageHandler(req: NextRequest) {
   const schema = z.object({
     prompt: z.string().max(4000),
     playerId: z.string(),

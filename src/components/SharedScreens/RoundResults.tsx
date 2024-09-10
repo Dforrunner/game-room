@@ -9,8 +9,6 @@ export default function RoundResults() {
   const { gameState, startNextPhase } = useContext(MemeAlchemyContext);
   const [showNextRoundButton, setShowNextRoundButton] = useState(false);
 
-  if (!gameState) return null;
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowNextRoundButton(true);
@@ -18,6 +16,8 @@ export default function RoundResults() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  if (!gameState) return null;
 
   return (
     <div className='h-full space-y-10 pt-8'>
