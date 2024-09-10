@@ -4,6 +4,7 @@ import { access, mkdir, writeFile } from 'fs-extra';
 import { join } from 'path';
 import sharp from 'sharp';
 import { internalServerError } from '@/utils/apiErrorHandler';
+import { randomId } from '@/utils/random';
 
 const openai = OpenAIClient.getInstance();
 
@@ -87,7 +88,7 @@ export async function uploadPlayerImage({
   roomId,
   trim = true,
 }: UploadPlayerImageProps) {
-  const fileName = `${playerId}.webp`;
+  const fileName = `${playerId + '_' + randomId()}.webp`;
   let optimizedImage = sharp(buffer);
 
   if (trim) {

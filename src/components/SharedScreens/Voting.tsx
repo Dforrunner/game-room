@@ -1,5 +1,5 @@
 import { MemeAlchemyContext } from '@/providers/MemeAlchemyProvider';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Image from 'next/image';
 import { cn } from '@/utils/cn';
 import CaptionCard from '../CaptionCard';
@@ -8,12 +8,14 @@ interface Props {
   isPlayerView?: boolean;
 }
 export default function Voting({ isPlayerView = false }: Props) {
-  const { gameState, submitVote } = useContext(MemeAlchemyContext);
+  const { gameState, submitVote, playerId } = useContext(MemeAlchemyContext);
   const numberOfSubmission = Object.keys(gameState!.imageSubmissions).length;
+  const [selectedId, setSelectedId] = useState<string>();
 
   const handleClick = (imgPlayerId: string) => {
     if (isPlayerView) {
       submitVote(imgPlayerId);
+      setSelectedId(imgPlayerId);
     }
   };
 
@@ -39,20 +41,22 @@ export default function Voting({ isPlayerView = false }: Props) {
         )}
       >
         {Object.entries(gameState!.imageSubmissions).map(
-          ([imgPlayerId, imageUrl]) => (
-            <CaptionCard
-              key={imgPlayerId}
-              onClick={() => handleClick(imgPlayerId)}
-            >
-              <Image
-                src={imageUrl}
-                width={300}
-                height={300}
-                className='w-full h-auto'
-                alt={'Img Option'}
-              />
-            </CaptionCard>
-          )
+          ([imgPlayerId, imageUrl]) =>
+            isPlayerView && imgPlayerId === playerId ? undefined : (
+              <CaptionCard
+                key={imgPlayerId}
+                selected={selectedId === imgPlayerId}
+                onClick={() => handleClick(imgPlayerId)}
+              >
+                <Image
+                  src={imageUrl}
+                  width={300}
+                  height={300}
+                  className='w-full h-auto'
+                  alt={'Img Option'}
+                />
+              </CaptionCard>
+            )
         )}
       </div>
     </div>

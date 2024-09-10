@@ -53,7 +53,9 @@ export default function AiImageGenerator({ onImageGenerated }: Props) {
       setImageUrl(data.imageUrl);
       onImageGenerated(data.imageUrl);
     } catch {
-      setError('Failed to generate the image. Please try again.');
+      setError(
+        "Failed to generate the image. Ensure you promt doesn't contain any explicit content."
+      );
     } finally {
       setLoading(false);
     }
@@ -115,9 +117,12 @@ export default function AiImageGenerator({ onImageGenerated }: Props) {
           <CaptionCard>
             <ImageLoader src={imageUrl} alt={''} width={512} height={512} />
           </CaptionCard>
-          <div className='bg-green-600 text-white rounded p-2'>
-            Your meme has been submitted!
-          </div>
+          {imageUrl && (
+            <div className='bg-green-600 text-white rounded p-2'>
+              Your meme has been submitted! Sit tight while others submit
+              theirs.
+            </div>
+          )}
         </>
       )}
     </div>

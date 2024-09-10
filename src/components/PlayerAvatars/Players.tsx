@@ -16,7 +16,7 @@ export default function Players({ showWhenSubmitted = false }: Props) {
   return (
     <div
       className={cn(
-        'w-full min-h-[180px] py-5 grid gap-4 overflow-hidden px-3',
+        'w-full min-h-[180px] px-12 grid gap-4  ',
         {
           'grid-cols-2': players.length <= 4,
           'grid-cols-3': players.length > 4 && players.length <= 6,

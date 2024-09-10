@@ -9,7 +9,7 @@ export default function Lobby() {
   const { gameState, roomId } = useContext(MemeAlchemyContext);
 
   return (
-    <div className='h-full flex-1 flex flex-col items-center justify-center py-5'>
+    <div className='h-full flex-1 flex flex-col items-center justify-center py-5 overflow-hidden'>
       <Players />
       <div className='text-2xl py-6'>
         <div>Waiting for players... ({gameState!.players.length} joined)</div>

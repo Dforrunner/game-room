@@ -52,7 +52,7 @@ export default function PlayerAvatar({ player, size = 'large' }: Props) {
         </div>
 
         <div
-          className='relative font-semibold rounded-[15px] px-3 lg:px-5 text-sm lg:text-lg'
+          className='relative z-10 font-semibold rounded-[15px] px-3 lg:px-5 text-sm lg:text-lg text-nowrap'
           style={{
             backgroundColor: player.color,
           }}

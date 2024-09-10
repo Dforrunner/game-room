@@ -1,6 +1,5 @@
 'use client';
 
-import GameStartBtn from '@/components/GameStartBtn';
 import Loading from '@/components/Loading';
 import PlayerJoinForm from '@/components/PlayerJoinForm';
 import AvatarSubmission from '@/components/PlayerScreens/AvatarSubmission';
@@ -10,6 +9,7 @@ import { MemeAlchemyContext } from '@/providers/MemeAlchemyProvider';
 import PlayerAiImageSubmission from '@/components/PlayerScreens/PlayerAiImageSubmission';
 import RoundResults from '@/components/SharedScreens/RoundResults';
 import FinalResults from '@/components/SharedScreens/FinalResults';
+import PlayerLobbyPhaseScreen from '@/components/PlayerScreens/PlayerLobbyPhaseScreen';
 
 export default function PlayerView() {
   const { gameState, player } = useContext(MemeAlchemyContext);
@@ -20,7 +20,7 @@ export default function PlayerView() {
 
   return (
     <div className='container mx-auto p-4 h-screen flex flex-col'>
-      {gameState.phase === 'lobby' && player.isHost && <GameStartBtn />}
+      {gameState.phase === 'lobby' && <PlayerLobbyPhaseScreen />}
       {gameState.phase === 'submission' && <PlayerAiImageSubmission />}
       {gameState.phase === 'voting' && <Voting isPlayerView={true} />}
       {gameState.phase === 'results' && <RoundResults />}

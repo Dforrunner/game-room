@@ -1,5 +1,6 @@
 import { MEME_CAPTIONS } from '@/lib/memeCaptions';
 import { getRandomLightColorHex } from './color';
+import { Phase } from '@/types/memeAlchemy';
 
 export const testMemeAlchemyGameState = () => {
   const playerIds = [
@@ -57,7 +58,7 @@ export const testMemeAlchemyGameState = () => {
       },
       round: 1,
       maxRounds: 5,
-      phase: 'results',
+      phase: Phase.Voting,
     },
     playerId: '1',
     roomId: '1234',
