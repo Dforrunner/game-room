@@ -1,34 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs-extra';
-import { join } from 'path';
-import { PartyType } from '@/types/gameServers';
+import { deleteFolder, deleteImage } from '@/lib/image';
 
 export async function POST(req: NextRequest) {
   try {
-    const { deletePath } = await req.json();
+    const { deletePaths } = await req.json();
 
-    const normalizedPath = join('/', deletePath);
-    if (
-      !Object.values(PartyType)
-        .map((p) => join('/', 'uploads', p))
-        .some((p) => normalizedPath.startsWith(p))
-    ) {
+    if (!deletePaths.length) {
       return NextResponse.json(
-        { message: 'Invalid delete path' },
+        { error: 'Please provide a delete path' },
         { status: 400 }
       );
     }
 
-    const deleteFilePath = join(process.cwd(), 'public', deletePath);
-    // Verify the path exists
-    const pathExists = await fs.pathExists(deleteFilePath);
-
-    if (!pathExists) {
-      return NextResponse.json({ message: 'File not found' }, { status: 400 });
+    for (const deletePath of deletePaths) {
+      if (deletePath.endsWith('.webp')) {
+        await deleteImage(deletePath);
+      } else {
+        await deleteFolder(
+          'https://60xib2erhylug4tz.public.blob.vercel-storage.com' +
+            deletePath
+        );
+      }
     }
-
-    // Delete the file
-    await fs.remove(deleteFilePath);
 
     return NextResponse.json({ message: 'File deleted successfully' });
   } catch (error) {

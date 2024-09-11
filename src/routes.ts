@@ -28,7 +28,7 @@ export const route = {
       player: (roomId: string) =>
         routeGen(GameRoute.MemeAlchemy + `/${roomId}/player`),
       imageFolder: (roomId: string) =>
-        `/uploads/${PartyType.MemeAlchemy}/${roomId}`,
+        `/${PartyType.MemeAlchemy}/${roomId}`,
     },
   },
 };

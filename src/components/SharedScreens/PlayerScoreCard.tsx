@@ -40,7 +40,7 @@ export default function PlayerScoreCard({ player, roundScores }: Props) {
       <div className='relative'>
         <LinearProgress
           variant='determinate'
-          value={playerScore}
+          value={playerScore/2}
           sx={{
             height: 30,
             borderRadius: 15,

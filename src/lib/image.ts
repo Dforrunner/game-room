@@ -1,10 +1,9 @@
-import { PartyType } from '@/types/gameServers';
 import OpenAIClient from './openAiClient';
-import { access, mkdir, writeFile } from 'fs-extra';
-import { join } from 'path';
 import sharp from 'sharp';
 import { internalServerError } from '@/utils/apiErrorHandler';
-import { randomId } from '@/utils/random';
+import { del, list, put } from '@vercel/blob';
+import { v4 as uuidv4 } from 'uuid';
+import { PartyType } from '@/types/gameServers';
 
 const openai = OpenAIClient.getInstance();
 
@@ -42,32 +41,32 @@ export async function generateImageFromDalle({
   if (!imageUrl) {
     return internalServerError('No image URL returned from OpenAI');
   }
+  return imageUrl;
+  // // Fetch the image from the URL using fetch
+  // const imageResponse = await fetch(imageUrl);
 
-  // Fetch the image from the URL using fetch
-  const imageResponse = await fetch(imageUrl);
+  // // Check if the image was successfully retrieved
+  // if (!imageResponse.ok) {
+  //   return internalServerError(
+  //     `Failed to fetch image: ${imageResponse.statusText}`
+  //   );
+  // }
 
-  // Check if the image was successfully retrieved
-  if (!imageResponse.ok) {
-    return internalServerError(
-      `Failed to fetch image: ${imageResponse.statusText}`
-    );
-  }
+  // // Save the image using fs-extra
+  // const bytes = await imageResponse.arrayBuffer();
+  // const buffer = Buffer.from(bytes);
 
-  // Save the image using fs-extra
-  const bytes = await imageResponse.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  // const publicImageUrl = await uploadPlayerImage({
+  //   playerId,
+  //   buffer,
+  //   imageSize: 512,
+  //   imageType: 'meme',
+  //   partyType,
+  //   roomId,
+  //   trim: false,
+  // });
 
-  const publicImageUrl = await uploadPlayerImage({
-    playerId,
-    buffer,
-    imageSize: 512,
-    imageType: 'meme',
-    partyType,
-    roomId,
-    trim: false,
-  });
-
-  return publicImageUrl;
+  // return publicImageUrl;
 }
 
 interface UploadPlayerImageProps {
@@ -88,7 +87,7 @@ export async function uploadPlayerImage({
   roomId,
   trim = true,
 }: UploadPlayerImageProps) {
-  const fileName = `${playerId + '_' + randomId()}.webp`;
+  const fileName = `${uuidv4()}.webp`;
   let optimizedImage = sharp(buffer);
 
   if (trim) {
@@ -100,19 +99,37 @@ export async function uploadPlayerImage({
     .webp()
     .toBuffer();
 
-  const relativeDir = join('uploads', partyType, roomId, imageType);
-  const uploadDir = join(process.cwd(), 'public', relativeDir);
-  const publicImageUrl = join('/', relativeDir, fileName);
+  const imgPath = [partyType, roomId, imageType, playerId, fileName].join('/');
+  const { url } = await put(imgPath, imageBuffer, {
+    access: 'public',
+    contentType: 'image/webp',
+  });
+  return url;
+}
 
-  // Check if the upload directory exists
+export async function deleteImage(deletePath: string) {
   try {
-    await access(uploadDir);
+    await del(deletePath);
+    return true;
   } catch (error) {
-    // If the directory doesn't exist, create it
-    await mkdir(uploadDir, { recursive: true });
+    console.error('Failed to delete file from Vercel Blob', error);
+    throw new Error('Failed to delete images');
   }
+}
 
-  await writeFile(join(uploadDir, fileName), imageBuffer);
+export async function deleteFolder(folderName: string) {
+  try {
+    // List all files in the folder
+    const { blobs } = await list({ prefix: folderName });
 
-  return publicImageUrl.replace(/\\/g, '/');
+    // Delete each file
+    for (const blob of blobs) {
+      await del(blob.url);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting folder from Vercel Blob:', error);
+    throw new Error('Failed to delete folder');
+  }
 }

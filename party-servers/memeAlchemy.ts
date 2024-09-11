@@ -99,11 +99,10 @@ export default class MemeAlchemyServer implements Party.Server {
   private removePlayer(id: string) {
     const index = this.gameState.players.findIndex((p) => p.id === id);
     if (index !== -1) {
-      this.gameState.players.splice(index, 1);
-
       // Remove any image submissions from the removed player
       this.clearPlayerImages(id).then(console.log).catch(console.error);
 
+      this.gameState.players.splice(index, 1);
       // If the removed player was the host, assign a new host
       if (
         this.gameState.players.length > 0 &&
@@ -146,6 +145,18 @@ export default class MemeAlchemyServer implements Party.Server {
       captions[Math.floor(Math.random() * captions.length)];
     this.gameState.imageSubmissions = {};
     this.gameState.phase = Phase.Submission;
+    console.log('Starting round', this.gameState.roundScores);
+    this.gameState.players = this.gameState.players.map((p) => ({
+      ...p,
+      score:
+        p.score +
+          this.gameState.roundScores[p.id]?.reduce(
+            (acc, score) => (acc += score.points),
+            0
+          ) || 0,
+    }));
+    this.gameState.roundScores = {};
+    console.log('Starting round', this.gameState.players);
     this.broadcastState();
   }
 
@@ -168,7 +179,7 @@ export default class MemeAlchemyServer implements Party.Server {
     this.gameState.roundScores[playerVotedFor] ??= [];
 
     if (
-      !this.gameState.roundScores[playerVotedFor].some(
+      !Object.values(this.gameState.roundScores).flat(1).some(
         (score) => score.votedBy === playerId
       )
     ) {
@@ -229,28 +240,35 @@ export default class MemeAlchemyServer implements Party.Server {
   }
 
   private async clearRoomImages() {
-    await this.clearImagesByPath(
-      route.game.memeAlchemy.imageFolder(this.party.id)
-    );
+    await this.clearImagesByPath([
+      route.game.memeAlchemy.imageFolder(this.party.id),
+    ]);
   }
 
   private async clearPlayerImages(playerId: string) {
     //Clear the player's images from game state
     const playerImagePath = this.gameState.imageSubmissions[playerId];
+    const playerAvatarPath = this.gameState.players.find(
+      (p) => p.id === playerId
+    )?.avatarUrl;
+
+    const deletePaths = [playerImagePath, playerAvatarPath].filter(
+      Boolean
+    ) as string[];
     delete this.gameState.imageSubmissions[playerId];
 
     //Clear the player's images from the server
-    await this.clearImagesByPath(playerImagePath);
+    await this.clearImagesByPath(deletePaths);
   }
 
-  private async clearImagesByPath(path: string) {
-    if (!path) return;
+  private async clearImagesByPath(paths: string[]) {
+    if (!paths.length) return;
     await fetch(apiRoute.image.delete(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ deletePath: path }),
+      body: JSON.stringify({ deletePaths: paths }),
     });
   }
 
