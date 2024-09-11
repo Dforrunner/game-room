@@ -1,6 +1,6 @@
 
 export function routeGen(url: string, params?: Record<string, any>): string {
-  url = process.env.NEXT_PUBLIC_SERVER_URL + url;
+  url = (process.env.NEXT_PUBLIC_SERVER_URL || '') + url;
 
   if (params) {
     const filteredParams = Object.entries(params)
