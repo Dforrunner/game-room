@@ -20,6 +20,11 @@ export const route = {
         routeGen(GameRoute.CaptionWars + `/${roomId}/host`),
       player: (roomId: string) =>
         routeGen(GameRoute.CaptionWars + `/${roomId}/player`),
+      playerFull: (roomId: string) =>
+        process.env.NEXT_PUBLIC_HOSTNAME +
+        '/' +
+        GameRoute.CaptionWars +
+        `/${roomId}/player`,
     },
     memeAlchemy: {
       home: () => routeGen(GameRoute.MemeAlchemy),
@@ -27,8 +32,7 @@ export const route = {
         routeGen(GameRoute.MemeAlchemy + `/${roomId}/host`),
       player: (roomId: string) =>
         routeGen(GameRoute.MemeAlchemy + `/${roomId}/player`),
-      imageFolder: (roomId: string) =>
-        `/${PartyType.MemeAlchemy}/${roomId}`,
+      imageFolder: (roomId: string) => `/${PartyType.MemeAlchemy}/${roomId}`,
     },
   },
 };
