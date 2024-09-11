@@ -7,7 +7,7 @@ interface Props {
   partType: PartyType;
 }
 export default function RoomQr({ roomId, partType }: Props) {
-  const gameRoue = {
+  const gameRoute = {
     [PartyType.MemeAlchemy]: route.game.memeAlchemy,
     [PartyType.CaptionWars]: route.game.captionWars,
   }[partType];
@@ -18,7 +18,7 @@ export default function RoomQr({ roomId, partType }: Props) {
         ROOM ID: <strong>{roomId}</strong>
       </h1>
       <QRCode
-        value={gameRoue.player(roomId)}
+        value={gameRoute.playerFull(roomId)}
         className='mx-auto w-32 h-32 md:w-40 md:h-40 xl:h-50 xl:w-50 '
       />
       <div className='text-sm lg:text-normal'>Scan QR code to join</div>

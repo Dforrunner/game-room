@@ -32,6 +32,11 @@ export const route = {
         routeGen(GameRoute.MemeAlchemy + `/${roomId}/host`),
       player: (roomId: string) =>
         routeGen(GameRoute.MemeAlchemy + `/${roomId}/player`),
+      playerFull: (roomId: string) =>
+        process.env.NEXT_PUBLIC_HOSTNAME +
+        '/' +
+        GameRoute.MemeAlchemy +
+        `/${roomId}/player`,
       imageFolder: (roomId: string) => `/${PartyType.MemeAlchemy}/${roomId}`,
     },
   },
