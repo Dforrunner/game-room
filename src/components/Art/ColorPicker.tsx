@@ -8,7 +8,7 @@ interface Props {
   onSelect?: (color: string) => void;
 }
 export default function ColorPicker({ onSelect }: Props) {
-  const [color, setColor] = useState('#000000');
+  const [color, setColor] = useState('#ffffff');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   let open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {

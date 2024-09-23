@@ -10,7 +10,7 @@ export default function HostNav() {
     <nav className='h-[6dvh] grid grid-cols-2 p-2'>
       <h1 className='font-bold text-2xl'>Meme Alchemy</h1>
       {gameState && gameState.phase !== Phase.Lobby && (
-        <div className='text-right pr-5 text-gray-700'>
+        <div className='text-right pr-5 text-gray-200'>
           <div>
             Round: {gameState.round} / {gameState.maxRounds}
           </div>

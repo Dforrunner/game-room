@@ -13,7 +13,7 @@ export default function Lobby() {
       <Players />
       <div className='text-2xl py-6'>
         <div>Waiting for players... ({gameState!.players.length} joined)</div>
-        <div className='text-sm text-gray-400'>
+        <div className='text-sm text-gray-300'>
           minumum 3 players required to start the game
         </div>
       </div>

@@ -17,7 +17,7 @@ export default function Nav() {
   )[gameState?.phase];
 
   return (
-    <nav className='h-[6dvh] px-3 grid grid-cols-3  justify-between items-center pt-2'>
+    <nav className='h-[6dvh] px-3 grid grid-cols-3 justify-between items-center pt-2'>
       <div />
       {/* <h1 className='font-bold'>Meme Alchemy</h1> */}
       <div className='text-center w-full'>{title}</div>

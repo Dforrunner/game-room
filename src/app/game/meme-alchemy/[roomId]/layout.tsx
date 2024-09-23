@@ -11,5 +11,9 @@ export default function MemeAlchemyPlayerLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <MemeAlchemyProvider>{children}</MemeAlchemyProvider>;
+  return (
+    <MemeAlchemyProvider>
+      <div className='grid-bg'>{children}</div>
+    </MemeAlchemyProvider>
+  );
 }

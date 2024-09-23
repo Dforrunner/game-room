@@ -59,7 +59,7 @@ export default function DrawingPad({ onSubmit }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<any>(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [color, setColor] = useState('#000000');
+  const [color, setColor] = useState('#FFFFFF');
   const [brushSize, setBrushSize] = useState(5);
   const [paths, setPaths] = useState<PathParams[]>([]);
   const undoClearStack = useRef<PathParams[]>([]);
@@ -223,29 +223,56 @@ export default function DrawingPad({ onSubmit }: Props) {
 
   return (
     <div
-      className="max-w-xl mx-auto"
+      className='max-w-xl mx-auto '
       style={{
         width: dimensions.width,
         height: dimensions.height,
       }}
     >
-      <div className="flex justify-between  pb-1">
-        <div className="flex gap-2">
+      <div className='flex justify-between  pb-1'>
+        <div className='flex gap-2'>
           <ColorPicker onSelect={setColor} />
           <PenSizePicker color={color} onSelect={setBrushSize} />
         </div>
 
-        <div className="flex gap-2">
-          <IconButton onClick={undo} size="small">
+        <div className='flex gap-2'>
+          <IconButton
+            onClick={undo}
+            size='small'
+            sx={{
+              backgroundColor: 'white',
+              '&:hover': {
+                backgroundColor: 'white',
+              },
+            }}
+          >
             <Undo />
           </IconButton>
 
-          <IconButton onClick={redo} size="small">
+          <IconButton
+            onClick={redo}
+            size='small'
+            sx={{
+              backgroundColor: 'white',
+              '&:hover': {
+                backgroundColor: 'white',
+              },
+            }}
+          >
             <Redo />
           </IconButton>
 
-          <IconButton onClick={clearCanvas} size="small">
-            <RotateCcw fill={'white'} stroke="gray" />
+          <IconButton
+            onClick={clearCanvas}
+            size='small'
+            sx={{
+              backgroundColor: 'white',
+              '&:hover': {
+                backgroundColor: 'white',
+              },
+            }}
+          >
+            <RotateCcw fill={'white'} stroke='gray' />
           </IconButton>
         </div>
       </div>
@@ -262,11 +289,11 @@ export default function DrawingPad({ onSubmit }: Props) {
         onTouchEnd={stopDrawing}
         onMouseLeave={stopDrawing}
         onTouchMove={handleMove}
-        className="border border-gray-300 rounded"
+        className='border border-gray-300 rounded bg-black/50'
       />
 
-      <div className="pt-3">
-        <Button onClick={handleSubmit} variant="outlined" fullWidth>
+      <div className='pt-3'>
+        <Button onClick={handleSubmit} variant='contained' fullWidth>
           Submit Drawing
         </Button>
       </div>

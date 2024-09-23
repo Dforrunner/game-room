@@ -77,18 +77,27 @@ export default function AiImageGenerator({ onImageGenerated }: Props) {
   };
 
   return (
-    <div className='container mx-auto flex flex-col items-center gap-2 h-3/4'>
+    <div className='container mx-auto flex flex-col items-center gap-2 h-3/4 text-white'>
       {!loading && !imageUrl && (
         <>
-          <TextField
-            placeholder={`Enter your prompt. Be as descriptive as possible. (Max ${MAX_PROMPT_LENGTH} characters)`}
-            fullWidth
-            multiline
-            rows={textAreaRows}
-            value={prompt}
-            onChange={handlePromptChange}
-            error={Boolean(error)}
-          />
+          <div className=' bg-white/20 size-full rounded'>
+            <TextField
+              slotProps={{
+                input: {
+                  style: {
+                    color: 'white',
+                  },
+                },
+              }}
+              placeholder={`Enter your prompt. Be as descriptive as possible. (Max ${MAX_PROMPT_LENGTH} characters)`}
+              fullWidth
+              multiline
+              rows={textAreaRows}
+              value={prompt}
+              onChange={handlePromptChange}
+              error={Boolean(error)}
+            />
+          </div>
           <div className='text-xs text-gray-500 flex w-full justify-between lg:px-2'>
             <div>{error && <div className='text-red-700 '>{error}</div>}</div>
             <div

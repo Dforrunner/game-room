@@ -1,5 +1,6 @@
 import { MemeAlchemyPlayer } from '@/types/memeAlchemy';
 import { cn } from '@/utils/cn';
+import { getContrastingColor } from '@/utils/color';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
@@ -9,8 +10,8 @@ interface Props {
 }
 export default function PlayerAvatar({ player, size = 'large' }: Props) {
   const sizeClassese = {
-    small: 'w-[50px] h-[50px]',
-    large: 'w-[40px] sm:w-[45px] md:w-[50px] lg:w-[55px] xl:w-[80px]',
+    small: 'w-[50px] h-[50px] ',
+    large: 'w-[40px] sm:w-[45px] md:w-[50px] lg:w-[55px] xl:w-[80px] ',
   }[size];
   return (
     <motion.div
@@ -23,7 +24,7 @@ export default function PlayerAvatar({ player, size = 'large' }: Props) {
         delay: Math.random() * 0.5,
       }}
       className={cn(
-        ' relative h-full flex flex-col justify-center items-center',
+        ' relative h-full flex flex-col justify-center items-center ',
         sizeClassese
       )}
     >
@@ -55,6 +56,7 @@ export default function PlayerAvatar({ player, size = 'large' }: Props) {
           className='relative z-10 font-semibold rounded-[15px] px-3 lg:px-5 text-sm lg:text-lg text-nowrap'
           style={{
             backgroundColor: player.color,
+            color: getContrastingColor(player.color)
           }}
         >
           {player.name}

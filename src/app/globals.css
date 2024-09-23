@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,6 +7,7 @@
 body {
   height: 100dvh;
   margin: 0;
+  color: white;
   /* overflow: hidden; */
 }
 
@@ -17,4 +20,123 @@ body {
 canvas {
   touch-action: none; /* Prevents scrolling and zooming */
   -ms-touch-action: none; /* For older IE versions */
+}
+
+.grid-bg {
+  position: relative;
+  z-index: 0;
+  background-color: #010824;
+  color: #eee;
+  min-height: 100vh;
+  background-image: repeating-linear-gradient(
+      to right,
+      transparent 0 39px,
+      #eee1 39px 40px
+    ),
+    repeating-linear-gradient(to bottom, transparent 0 39px, #eee1 39px 40px);
+
+  &::before {
+    content: '';
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    transform: translateX(calc(50vw - 200px));
+    background-image: linear-gradient(to right, #d02e23, #270946);
+    top: -200px;
+    z-index: -1;
+    border-radius: 50% 50% 0 0;
+    pointer-events: none;
+    filter: blur(250px);
+  }
+}
+
+.animated-text-gradient {
+  background-image: linear-gradient(
+    to right,
+    #6250ee,
+    #9646f1,
+    #6250ee,
+    #9646f1,
+    #6250ee
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% auto;
+  animation: gradientAnimation 1s linear infinite;
+}
+
+@keyframes gradientAnimation {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.text-clamp-lg {
+  font-size: clamp(1.375rem, 0.8333rem + 2.3111vw, 3rem);
+}
+
+.glassmorphism {
+  background-color: rgba(72, 33, 245, 0.1);
+  backdrop-filter: blur(1px);
+  box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.2);
+}
+
+@property --angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+.animated-border {
+  position: relative;
+  background-color: rgba(8, 1, 24, 0.95);
+  color: white;
+}
+.animated-border::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -2px;
+  left: -2px;
+  border-radius: inherit;
+  --angle: 0deg;
+  background-image: conic-gradient(
+    from var(--angle),
+    #ea2dd8,
+    #001bf1,
+    #ea2dd8
+  );
+  animation: autoRotate 2s linear infinite;
+  padding: 2px;
+  box-sizing: unset;
+  z-index: -1;
+  backdrop-filter: blur(80px);
+}
+
+.animated-border::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: -2px;
+  left: -2px;
+  border-radius: inherit;
+  --angle: 0deg;
+  background-image: conic-gradient(
+    from var(--angle),
+    #ea2dd8,
+    #001bf1,
+    #ea2dd8
+  );
+  animation: autoRotate 2s linear infinite;
+  padding: 2px;
+  box-sizing: unset;
+  z-index: -1;
+  filter: blur(10px);
+}
+@keyframes autoRotate {
+  to {
+    --angle: 360deg;
+  }
 }
