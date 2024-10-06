@@ -22,7 +22,7 @@ export default function AiImageGenerator({ onImageGenerated }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const textAreaRows = useMemo(
-    () => Math.floor(window.innerHeight / 34),
+    () => Math.floor(window.innerHeight / 35),
     [window.innerHeight]
   );
 
@@ -77,10 +77,10 @@ export default function AiImageGenerator({ onImageGenerated }: Props) {
   };
 
   return (
-    <div className='container mx-auto flex flex-col items-center gap-2 h-3/4 text-white'>
+    <div className='container mx-auto flex flex-col items-center gap-2 h-3/4 text-white px-2'>
       {!loading && !imageUrl && (
         <>
-          <div className=' bg-white/20 size-full rounded'>
+          <div className=' bg-white/10 size-full rounded'>
             <TextField
               slotProps={{
                 input: {
@@ -123,7 +123,7 @@ export default function AiImageGenerator({ onImageGenerated }: Props) {
 
       {(loading || imageUrl) && (
         <>
-          <CaptionCard>
+          <CaptionCard isPlayerScreen={true}>
             <ImageLoader src={imageUrl} alt={''} width={512} height={512} />
           </CaptionCard>
           {imageUrl && (

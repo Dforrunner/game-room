@@ -7,18 +7,7 @@ import { PartyType } from '@/types/gameServers';
 
 const openai = OpenAIClient.getInstance();
 
-interface generateImageFromDalle {
-  prompt: string;
-  playerId: string;
-  partyType: PartyType;
-  roomId: string;
-}
-export async function generateImageFromDalle({
-  prompt,
-  playerId,
-  partyType,
-  roomId,
-}: generateImageFromDalle) {
+export async function generateImageFromDalle(prompt: string) {
   // Call the OpenAI API to generate the image
   // const response = await openai.images.generate({
   //   model: 'dall-e-3',
@@ -42,31 +31,6 @@ export async function generateImageFromDalle({
     return internalServerError('No image URL returned from OpenAI');
   }
   return imageUrl;
-  // // Fetch the image from the URL using fetch
-  // const imageResponse = await fetch(imageUrl);
-
-  // // Check if the image was successfully retrieved
-  // if (!imageResponse.ok) {
-  //   return internalServerError(
-  //     `Failed to fetch image: ${imageResponse.statusText}`
-  //   );
-  // }
-
-  // // Save the image using fs-extra
-  // const bytes = await imageResponse.arrayBuffer();
-  // const buffer = Buffer.from(bytes);
-
-  // const publicImageUrl = await uploadPlayerImage({
-  //   playerId,
-  //   buffer,
-  //   imageSize: 512,
-  //   imageType: 'meme',
-  //   partyType,
-  //   roomId,
-  //   trim: false,
-  // });
-
-  // return publicImageUrl;
 }
 
 interface UploadPlayerImageProps {

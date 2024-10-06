@@ -32,13 +32,13 @@ export default function Home() {
         <div className='flex flex-col h-20 text-center'>
           <TextFadeIn
             text='Compete to generate the best image for a given'
-            lineNum={2}
+            lineNum={0}
             className='text-white/80'
           />
 
           <TextFadeIn
             text='caption and create the ultimate meme!'
-            lineNum={3}
+            lineNum={1}
             className='text-white/80'
           />
         </div>

@@ -13,7 +13,7 @@ export default function MemeAlchemyPlayerLayout({
   return (
     <div className='container mx-auto h-full'>
       <PlayerNav />
-      <div className='h-[94dvh]'>{children}</div>
+      <div className='h-[calc(100dvh_-_3.5rem)]'>{children}</div>
     </div>
   );
 }

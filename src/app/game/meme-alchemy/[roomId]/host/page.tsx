@@ -15,12 +15,12 @@ export default function GameView() {
   if (!gameState) return <Loading />;
 
   return (
-    <>
+    <div className='h-full'>
       {gameState.phase === 'lobby' && <Lobby />}
       {gameState.phase === 'submission' && <SubmissionPhase />}
       {gameState.phase === 'voting' && <Voting />}
       {gameState.phase === 'results' && <RoundResults />}
       {gameState.phase === 'finalResults' && <FinalResults />}
-    </>
+    </div>
   );
 }

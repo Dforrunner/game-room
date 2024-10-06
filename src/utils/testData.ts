@@ -58,7 +58,7 @@ export const testMemeAlchemyGameState = () => {
       },
       round: 1,
       maxRounds: 5,
-      phase: Phase.Voting,
+      phase: Phase.FinalResults,
     },
     playerId: '1',
     roomId: '1234',

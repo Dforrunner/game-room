@@ -145,7 +145,7 @@ export default class MemeAlchemyServer implements Party.Server {
       captions[Math.floor(Math.random() * captions.length)];
     this.gameState.imageSubmissions = {};
     this.gameState.phase = Phase.Submission;
-    console.log('Starting round', this.gameState.roundScores);
+    
     this.gameState.players = this.gameState.players.map((p) => ({
       ...p,
       score:
@@ -156,7 +156,6 @@ export default class MemeAlchemyServer implements Party.Server {
           ) || 0,
     }));
     this.gameState.roundScores = {};
-    console.log('Starting round', this.gameState.players);
     this.broadcastState();
   }
 

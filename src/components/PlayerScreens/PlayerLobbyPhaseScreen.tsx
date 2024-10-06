@@ -14,7 +14,9 @@ export default function PlayerLobbyPhaseScreen() {
         </>
       )}
 
-      {gameState!.players.length >= 3 && player!.isHost && <GameStartBtn />}
+      <div className='flex justify-center'>
+        {gameState!.players.length >= 3 && player!.isHost && <GameStartBtn />}
+      </div>
       {gameState!.players.length >= 3 && !player!.isHost && (
         <div>Waiting for the host to start the game</div>
       )}

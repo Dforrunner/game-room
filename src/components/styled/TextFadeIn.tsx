@@ -8,10 +8,9 @@ interface Props {
   lineNum?: number;
   className?: string;
 }
-export function TextFadeIn({ text, lineNum = 1, className }: Props) {
+export function TextFadeIn({ text, lineNum = 0, className }: Props) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-
   const strArr: string[] = [];
 
   text.split(' ').forEach((el) => {
@@ -28,7 +27,7 @@ export function TextFadeIn({ text, lineNum = 1, className }: Props) {
             animate={{ opacity: 1 }}
             transition={{
               duration: 0.2,
-              delay: i / 50 + lineNum / 2,
+              delay: i / 100 + (lineNum ? lineNum / 2 : 0),
             }}
             key={i}
           >

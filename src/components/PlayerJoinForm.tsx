@@ -31,7 +31,7 @@ export default function PlayerJoinForm() {
     setPlayerName(val);
   };
   return (
-    <div className='mx-auto p-4 h-screen flex flex-col items-center justify-center'>
+    <div className='mx-auto h-full flex flex-col items-center justify-center'>
       <div className='flex flex-col items-center gap-3 border rounded p-5 shadow animated-border'>
         <h2 className='text-xl'>Meme Alchemy Game Room</h2>
         <p className='text-white/70 py-2'>

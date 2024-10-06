@@ -19,7 +19,7 @@ export default function PlayerView() {
   if (!player.avatarUrl) return <AvatarSubmission />;
 
   return (
-    <div className='container mx-auto p-4 h-screen flex flex-col'>
+    <div className='container mx-auto h-full'>
       {gameState.phase === 'lobby' && <PlayerLobbyPhaseScreen />}
       {gameState.phase === 'submission' && <PlayerAiImageSubmission />}
       {gameState.phase === 'voting' && <Voting isPlayerView={true} />}

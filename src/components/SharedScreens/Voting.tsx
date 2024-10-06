@@ -20,11 +20,7 @@ export default function Voting({ isPlayerView = false }: Props) {
   };
 
   return (
-    <div className='h-full mx-auto'>
-      <h1 className='text-2xl font-bold text-center'>
-        Vote for the best meme!
-      </h1>
-
+    <div className='h-full mx-auto overflow-y-auto pb-28'>
       <div
         className={cn(
           'w-full py-5 grid gap-4 overflow-hidden px-3',

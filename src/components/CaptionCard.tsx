@@ -9,22 +9,24 @@ interface Props {
   className?: string;
   onClick?: () => void;
   selected?: boolean;
+  isPlayerScreen?: boolean;
 }
 export default function CaptionCard({
   children,
   className,
   onClick,
   selected,
+  isPlayerScreen = false,
 }: Props) {
   const { gameState } = useContext(MemeAlchemyContext);
   if (!gameState?.currentCaption) return null;
   const { top, bottom } = gameState?.currentCaption;
 
   const textClass =
-    'text-white font-medium text-center w-full bg-gray-600 px-1 py-2 ';
+    'text-white font-medium text-center w-full bg-indigo-950 px-1 py-2';
   const conditionalClass = {
-    ' md:text-3xl lg:text-5xl 2xl:text-6xl':
-      gameState.phase === Phase.Submission,
+    ' card-caption-text-camp':
+      gameState.phase === Phase.Submission && !isPlayerScreen,
   };
 
   const handleClick = () => {
@@ -36,9 +38,10 @@ export default function CaptionCard({
   return (
     <div
       className={cn(
-        'container relative shadow-md rounded overflow-hidden flex flex-col items-center justify-center',
+        'container relative shadow-lg rounded overflow-hidden flex flex-col items-center justify-center',
         {
           'border-4 border-blue-500': selected,
+          'size-[512px]': isPlayerScreen,
         }
       )}
       onClick={handleClick}

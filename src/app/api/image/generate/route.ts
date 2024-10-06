@@ -4,6 +4,9 @@ import { z } from 'zod';
 import { withErrorHandler } from '@/utils/apiErrorHandler';
 import { parsedAndValidateData } from '@/utils/zodParser';
 import { PartyType } from '@/types/gameServers';
+import { generateImageWithStabilityAi } from '@/lib/stabilityAi';
+
+let reqCounter = 0;
 
 async function generateImageHandler(req: NextRequest) {
   const schema = z.object({
@@ -15,7 +18,10 @@ async function generateImageHandler(req: NextRequest) {
   const rawData = await req.json();
   const data = parsedAndValidateData<typeof schema>(rawData, schema);
 
-  const imageUrl = await generateImageFromDalle(data);
+  const imageUrl =
+    reqCounter % 2 === 0
+      ? await generateImageFromDalle(data.prompt)
+      : await generateImageWithStabilityAi(data.prompt);
 
   // Return the image URL in the response
   return NextResponse.json({ imageUrl });

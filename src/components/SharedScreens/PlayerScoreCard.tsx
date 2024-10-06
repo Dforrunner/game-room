@@ -36,15 +36,15 @@ export default function PlayerScoreCard({ player, roundScores }: Props) {
   }, [roundScores]);
 
   return (
-    <div className='grid grid-cols-[5fr_1fr] items-center rounded-full p-3 bg-slate-200'>
+    <div className='grid grid-cols-[5fr_1fr] items-center rounded-full p-3 backdrop-blur-lg bg-opacity-10 bg-white/10'>
       <div className='relative'>
         <LinearProgress
           variant='determinate'
-          value={playerScore/2}
+          value={playerScore / 2}
           sx={{
-            height: 30,
+            height: 50,
             borderRadius: 15,
-            backgroundColor: 'white',
+            backgroundColor: 'transparent',
             '& .MuiLinearProgress-bar': {
               background: 'linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);',
             },
@@ -66,7 +66,7 @@ export default function PlayerScoreCard({ player, roundScores }: Props) {
         </div>
       </div>
       <div className='text-right relative flex justify-end items-center'>
-        <div className='absolute size-24 rounded-full bg-slate-200 -right-6 -z-10 ' />
+        <div className='absolute size-24 rounded-full bg-indigo-500/90 blur -right-6 -z-10 ' />
         <PlayerAvatar player={player} size='small' />
       </div>
     </div>
